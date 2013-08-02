@@ -27,8 +27,9 @@ require.config({
 });
 
 require([
+  'underscore',
     'backbone'
-], function (Backbone) {
+], function (_, Backbone) {
 
   window.MyRouter = Backbone.Router.extend({
     routes: {
@@ -38,12 +39,16 @@ require([
   });
 
   window.Image = Backbone.Model.extend({
-    defaults: function() { return {
-      'filename': ''
-    };},
-    initialize: function () {
-      console.log("hello entering initialize for Image object");
-    }
+    defaults: function() { 
+      return {
+        'filename': ''
+      };
+    },
+    
+    initialize: function (options) {
+      //console.log("hello entering initialize for Image object", options);
+    },
+
   });
 
   window.ImageList = Backbone.Collection.extend({
@@ -51,29 +56,59 @@ require([
     url: '/images/'
   });
 
+  window.ImageView = Backbone.View.extend({
+
+    initialize: function (options) {
+      //console.log(options);
+      this.model = options.model;
+      // this.model.on('change', this.render, this);
+      // this.model.on('destroy', this.remove, this);
+    },
+
+    //template: _.template($('<img src="#">').html()),
+
+    tagName: 'img',
+
+    render: function () {
+      //console.log('rendering inside ImageView');
+      //this.el = _.template('<img>', {"filename", "image1.png"});
+      //this.el = $('<img>').html();
+      // console.log('this.el: ', this.el);
+      // console.log('this.model: ', this.model);
+      // console.log('this.model: ', this.model.attributes.filename);
+      this.$el.attr('src','/images/' + this.model.attributes.filename);
+      //this.el = $('img').attr('src','/images/' + this.model.attributes.filename);
+      return this;
+    }
+  });
+
   window.GalleryApp = Backbone.View.extend({
-    images: new ImageList(),
+    el: $('#gallery'),
 
     initialize: function () {
-      console.log("entering GalleryApp.initialize()");
-      var self = this,
-        parentElt = $('#gallery');
+      //console.log("entering GalleryApp.initialize()");
+      this.images = new ImageList();
+      this.images.add(new Image({'filename': 'image1.png'}));
+      this.images.add(new Image({'filename': 'image2.png'}));
+      this.images.add(new Image({'filename': 'image3.png'}));
 
-      parentElt.template('/templates/app.html', {}, function () {
-        self.setElement($('#todoapp'));
+      var img = new ImageView({model: this.images.at(0)});
+      this.$el.append(img.render().el);
+      img = new ImageView({model: this.images.at(1)});
+      this.$el.append(img.render().el);
+      img = new ImageView({model: this.images.at(2)});
+      this.$el.append(img.render().el);
 
-        self.input = self.$("#new-todo");
-
-        // self.todos.on('add', self.addOne, self);
-        // self.todos.on('reset', self.addAll, self);
-        // self.todos.on('all', self.render, self);
-
-        var imgs = self.images.fetch();
-        console.log('imgs: ', imgs);
-      });
+      this.render();
     },
     render: function () {
-      console.log('inside GalleryApp.render()');
+      //console.log('inside GalleryApp.render()', this.$el);
+      //this.$el.html('<h1>This is a gallery</h1>');
+      // for (var i = this.images.length - 1; i >= 0; i--) {
+      //   console.log('hi', this.images.at(i));
+      //   // create ImageView for each
+      //   this.$el.append(new ImageView());
+      // };
     }
   });
 
