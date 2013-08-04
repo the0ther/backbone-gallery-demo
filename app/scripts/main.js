@@ -63,6 +63,13 @@ require([
     render: function () {
       this.$el.html(this.template(this.model.toJSON()));
       return this;
+    },
+
+    update: function (model) {
+      //console.log('inside update: ', path);
+      //$('img', this.el).attr('src', path);
+      this.model = model;
+      this.render();
     }
   });
 
@@ -76,12 +83,11 @@ require([
     },
 
     initialize: function (options) {
-      console.log(options.models);
+      //console.log(options.models);
       this.current = 0;
       this.numImages = options.models.length;
       this.$el = $('.image-list');
       this.model = options.models;
-      // setup a highlight/outline
     },
 
     render: function () {
@@ -140,14 +146,14 @@ require([
       return this;
     },
     back: function () {
-      console.log('in GalleryApp.back!!!');
       this.current === 0 ? this.numImages - 1 : this.current--;
       this.listView.back();
+      this.imageView.update(this.imgs[this.current].attributes.path);
     },
     forward: function () {
-      console.log('in GalleryApp.forward!!!');
       this.current === this.numImages - 1 ? 0 : this.current++;
       this.listView.forward();
+      this.imageView.update(this.imgs[this.current]);
     },
     jumpTo: function (index) {
       console.log('in GalleryApp.jumpTo()');
