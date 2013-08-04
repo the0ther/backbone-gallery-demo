@@ -85,25 +85,25 @@ require([
     initialize: function (options) {
       //console.log(options.models);
       this.current = 0;
-      this.numImages = options.models.length;
+      //this.imgs = options.models;
       this.$el = $('.image-list');
-      this.model = options.models;
+      this.models = options.models;
     },
 
     render: function () {
-      this.$el.html(this.template({'images': this.model}));
+      this.$el.html(this.template({'images': this.models}));
       $('li:first', this.el).css('outline', 'solid 2px yellow');
       return this;
     },
 
     back: function () {
-      this.current === 0 ? this.numImages - 1 : this.current--;
+      this.current === 0 ? this.models.length - 1 : this.current--;
       $('li', this.el).css('outline', '');
       $('li', this.el).eq(this.current).css('outline', 'solid 2px yellow');
     },
 
     forward: function () {
-      this.current === this.numImages - 1 ? 0 : this.current++;
+      this.current === this.models.length - 1 ? 0 : this.current++;
       $('li', this.el).css('outline', '');
       $('li', this.el).eq(this.current).css('outline', 'solid 2px yellow');
     },
@@ -125,11 +125,13 @@ require([
 
     initialize: function () {
       this.current = 0;
-      this.numImages = 3;
+
       this.imgs = [];
       this.imgs.push(new Img({'path': '/images/image1.png', 'thumbPath': '/images/thumbnails/image1_t.png'}));
       this.imgs.push(new Img({'path': '/images/image2.png', 'thumbPath': '/images/thumbnails/image2_t.png'}));
       this.imgs.push(new Img({'path': '/images/image3.png', 'thumbPath': '/images/thumbnails/image3_t.png'}));
+      this.imgs.push(new Img({'path': '/images/image4.png', 'thumbPath': '/images/thumbnails/image4_t.png'}));
+      this.imgs.push(new Img({'path': '/images/image5.png', 'thumbPath': '/images/thumbnails/image5_t.png'}));
 
       this.imageList = new ImageList(this.imgs);
 
@@ -146,12 +148,12 @@ require([
       return this;
     },
     back: function () {
-      this.current === 0 ? this.numImages - 1 : this.current--;
+      this.current === 0 ? this.imgs.length - 1 : this.current--;
       this.listView.back();
-      this.imageView.update(this.imgs[this.current].attributes.path);
+      this.imageView.update(this.imgs[this.current]); 
     },
     forward: function () {
-      this.current === this.numImages - 1 ? 0 : this.current++;
+      this.current === this.imgs.length - 1 ? 0 : this.current++;
       this.listView.forward();
       this.imageView.update(this.imgs[this.current]);
     },
