@@ -38,13 +38,7 @@ require([
     }
   });
 
-  window.Img = Backbone.Model.extend({
-    defaults: function() { 
-      return {
-        'path': ''
-      };
-    }
-  });
+  window.Img = Backbone.Model.extend();
 
   window.ImageList = Backbone.Collection.extend({
     model: Img,
@@ -54,6 +48,7 @@ require([
   window.ImageView = Backbone.View.extend({
 
     initialize: function (options) {
+      this.$el = $('.hero-image');
       this.model = options.model;
     },
 
@@ -66,7 +61,21 @@ require([
   });
 
   window.ImageStripView = Backbone.View.extend({
+    template: _.template('<% _.each(images, function(img) { %> <li><img src="<%= img.attributes.thumbPath %>"></li> <% }); %>'),
 
+    el: 'ul',
+
+    initialize: function (options) {
+      console.log(options.models);
+      //console.log(options.models.toJSON());
+      this.$el = $('.image-list');
+      this.model = options.models;
+    },
+
+    render: function () {
+      this.$el.html(this.template({'images': this.model}));
+      return this;
+    }
   });
 
   window.GalleryApp = Backbone.View.extend({
@@ -74,29 +83,29 @@ require([
 
     initialize: function () {
       var imgs = [];
-      imgs.push(new Img({'path': '/images/image1.png'}));
-      imgs.push(new Img({'path': '/images/image2.png'}));
-      imgs.push(new Img({'path': '/images/image3.png'}));
+      imgs.push(new Img({'path': '/images/image1.png', 'thumbPath': '/images/thumbnails/image1_t.png'}));
+      imgs.push(new Img({'path': '/images/image2.png', 'thumbPath': '/images/thumbnails/image2_t.png'}));
+      imgs.push(new Img({'path': '/images/image3.png', 'thumbPath': '/images/thumbnails/image3_t.png'}));
 
       this.images = new ImageList(imgs);
 
       var img = new ImageView({ model: imgs[0] });
       this.$el.append(img.render().el);
-      img = new ImageView({ model: imgs[1] });
-      this.$el.append(img.render().el);
-      img = new ImageView({ model: imgs[2] });
-      this.$el.append(img.render().el);
+      // img = new ImageView({ model: imgs[1] });
+      // this.$el.append(img.render().el);
+      // img = new ImageView({ model: imgs[2] });
+      // this.$el.append(img.render().el);
+
+      var listView = new ImageStripView(this.images);
+      $('.image-list').append(listView.render().el);
+
+
+      this.current = 0;
 
       this.render();
     },
     render: function () {
-      //console.log('inside GalleryApp.render()', this.$el);
-      //this.$el.html('<h1>This is a gallery</h1>');
-      // for (var i = this.images.length - 1; i >= 0; i--) {
-      //   console.log('hi', this.images.at(i));
-      //   // create ImageView for each
-      //   this.$el.append(new ImageView());
-      // };
+
       return this;
     }
   });

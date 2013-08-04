@@ -1,6 +1,15 @@
 $iconSpritePath: '/images/glyphicons-halflings.png';
 @import 'sass-bootstrap/lib/bootstrap';
 
+body {
+  background-color: black;
+}
+
+.image-list li {
+  display: inline-block;
+  list-style: none;
+}
+
 .hero-unit {
     margin: 50px auto 0 auto;
     width: 300px;
