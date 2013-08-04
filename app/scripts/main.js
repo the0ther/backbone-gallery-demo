@@ -34,9 +34,19 @@ require([
   window.MyRouter = Backbone.Router.extend({
     routes: {
       'help': 'help',
-      'images/:id': 'images'
+      'images(/:id)': 'images'
+    },
+
+    images: function (id) {
+      console.log('inside the images router', id);
     }
   });
+
+  var myRouter = new MyRouter();
+
+  myRouter.on('route:images', function(id) {
+    console.log('INSIDE THIS OTHER ROUTER THING', arguments);
+  })
 
   window.Img = Backbone.Model.extend({
     // initialize: function () {
