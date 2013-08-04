@@ -41,7 +41,7 @@ require([
   window.Img = Backbone.Model.extend({
     defaults: function() { 
       return {
-        'filename': ''
+        'path': ''
       };
     }
   });
@@ -54,19 +54,19 @@ require([
   window.ImageView = Backbone.View.extend({
 
     initialize: function (options) {
-      console.log(options);
       this.model = options.model;
     },
 
-    //template: _.template($('<img src="<%= model.filename %>">', this.model).html()),
-
-    tagName: 'img',
+    template: _.template('<img src="<%= path %>">'),
 
     render: function () {
-      //console.log(_.template($('<img src="<%= model.filename %>">', this.model).html());
-      this.$el.attr('src','/images/' + this.model.attributes.filename);
+      this.$el.html(this.template(this.model.toJSON()));
       return this;
     }
+  });
+
+  window.ImageStripView = Backbone.View.extend({
+
   });
 
   window.GalleryApp = Backbone.View.extend({
@@ -74,9 +74,9 @@ require([
 
     initialize: function () {
       var imgs = [];
-      imgs.push(new Img({'filename': 'image1.png'}));
-      imgs.push(new Img({'filename': 'image2.png'}));
-      imgs.push(new Img({'filename': 'image3.png'}));
+      imgs.push(new Img({'path': '/images/image1.png'}));
+      imgs.push(new Img({'path': '/images/image2.png'}));
+      imgs.push(new Img({'path': '/images/image3.png'}));
 
       this.images = new ImageList(imgs);
 
@@ -97,6 +97,7 @@ require([
       //   // create ImageView for each
       //   this.$el.append(new ImageView());
       // };
+      return this;
     }
   });
 
