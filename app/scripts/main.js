@@ -31,30 +31,7 @@ require([
     'backbone'
 ], function (_, Backbone) {
 
-  window.MyRouter = Backbone.Router.extend({
-    routes: {
-      'help': 'help',
-      'images(/:id)': 'images'
-    },
-
-    images: function (id) {
-      console.log('inside the images router', id);
-    }
-  });
-
-  var myRouter = new MyRouter();
-
-  myRouter.on('route:images', function(id) {
-    console.log('INSIDE THIS OTHER ROUTER THING', arguments);
-  })
-
-  window.Img = Backbone.Model.extend({
-    // initialize: function () {
-    //   this.on('change:isCurrent', function () {
-
-    //   })
-    // }
-  });
+  window.Img = Backbone.Model.extend();
 
   window.ImageList = Backbone.Collection.extend({
     model: Img,
@@ -76,8 +53,6 @@ require([
     },
 
     update: function (model) {
-      //console.log('inside update: ', path);
-      //$('img', this.el).attr('src', path);
       this.model = model;
       this.render();
     }
@@ -88,9 +63,9 @@ require([
 
     el: 'ul',
 
-    events: {
-      'click img': 'jumpTo'
-    },
+    // events: {
+    //   'click img': 'jumpTo'
+    // },
 
     initialize: function (options) {
       //console.log(options.models);
@@ -118,10 +93,11 @@ require([
       $('li', this.el).eq(this.current).css('outline', 'solid 2px yellow');
     },
 
-    jumpTo: function (evt) {
-      var index = $(evt.target).parent().index();
-      // HACK: fix this
-      gallery.jumpTo(index);
+    jumpTo: function (index) {
+      console.log('inside the strip jumpto()');
+      this.current = index;
+      $('li', this.el).css('outline', '');
+      $('li', this.el).eq(this.current).css('outline', 'solid 2px yellow');
     }
   });
 
@@ -144,39 +120,54 @@ require([
       this.imgs.push(new Img({'path': '/images/image5.png', 'thumbPath': '/images/thumbnails/image5_t.png'}));
 
       this.imageList = new ImageList(this.imgs);
-
+      
       this.imageView = new ImageView({ model: this.imgs[this.current] });
       this.$el.append(this.imageView.render().el);
-
       this.listView = new ImageStripView(this.imageList);
       $('.image-list').append(this.listView.render().el);
 
       this.render();
     },
     render: function () {
-
       return this;
     },
     back: function () {
       this.current === 0 ? this.imgs.length - 1 : this.current--;
+      myRouter.navigate('images/' + (this.current+1));
       this.listView.back();
       this.imageView.update(this.imgs[this.current]); 
     },
     forward: function () {
       this.current === this.imgs.length - 1 ? 0 : this.current++;
+      myRouter.navigate('images/' + (this.current+1));
       this.listView.forward();
       this.imageView.update(this.imgs[this.current]);
     },
     jumpTo: function (index) {
-      console.log('in GalleryApp.jumpTo()');
+      // index is zero-based here
       this.current = index;
-      //this.images.jumpTo(index);
+      if (index >= 0 && index < this.imgs.length) {
+        this.listView.jumpTo(index);
+        this.imageView.update(this.imgs[index]);
+      }
     }
   });
+
+  var gallery = new GalleryApp();
+
+  window.MyRouter = Backbone.Router.extend({
+    routes: {
+      'images(/:id)': 'images'
+    },
+
+    images: function (id) {
+      gallery.jumpTo(id-1);
+    }
+  });
+
+  var myRouter = new MyRouter();
 
   Backbone.history.start({
     silent: false
   });
-
-  var gallery = new GalleryApp();
 });
