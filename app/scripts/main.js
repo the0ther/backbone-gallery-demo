@@ -142,8 +142,15 @@ require([
       this.listView.forward();
       this.imageView.update(this.imgs[this.current]);
     },
-    jumpTo: function (index) {
-      console.log('entering jumpTo()');
+    jumpTo: function (arg) {
+      console.log('entering jumpTo()', typeof arg);
+      var index = 0;
+      if (typeof arg === 'object') {
+        console.log('index calc: ', $(arg.target).parent().index());
+        index = $(arg.target).parent().index();
+      } else {
+        index = arg;
+      }
       // index is zero-based here
       this.current = index;
       if (index >= 0 && index < this.imgs.length) {
