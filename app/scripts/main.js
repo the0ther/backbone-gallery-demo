@@ -34,8 +34,7 @@ require([
   window.Img = Backbone.Model.extend();
 
   window.ImageList = Backbone.Collection.extend({
-    model: Img,
-    url: '/images/'
+    model: Img
   });
 
   window.ImageView = Backbone.View.extend({
@@ -63,10 +62,6 @@ require([
 
     el: 'ul',
 
-    // events: {
-    //   'click img': 'jumpTo'
-    // },
-
     initialize: function (options) {
       this.current = 0;
       this.$el = $('.image-list');
@@ -92,7 +87,6 @@ require([
     },
 
     jumpTo: function (index) {
-      console.log('inside the strip jumpto()');
       this.current = index;
       $('li', this.el).removeClass('current');
       $('li', this.el).eq(this.current).addClass('current');
@@ -143,16 +137,15 @@ require([
       this.imageView.update(this.imgs[this.current]);
     },
     jumpTo: function (arg) {
-      console.log('entering jumpTo()', typeof arg);
       var index = 0;
       if (typeof arg === 'object') {
-        console.log('index calc: ', $(arg.target).parent().index());
         index = $(arg.target).parent().index();
       } else {
         index = arg;
       }
       // index is zero-based here
       this.current = index;
+      myRouter.navigate('images/' + (this.current+1));
       if (index >= 0 && index < this.imgs.length) {
         this.listView.jumpTo(index);
         this.imageView.update(this.imgs[index]);
