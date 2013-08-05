@@ -12,11 +12,12 @@ body {
 
 .arrow-left, .arrow-right {
   min-height: 585px;
+  cursor: pointer;
 }
 
 .image-list {
   display: block;
-  margin: .7em auto;
+  margin: 1em auto;
 }
 
 .image-list li {
@@ -28,4 +29,13 @@ body {
 .hero-unit {
     margin: 50px auto 0 auto;
     width: 300px;
+}
+
+.current {
+  outline: solid 2px yellow;
+}
+
+#gallery {
+  margin-top: 3em;
+  margin-bottom: 1em;
 }

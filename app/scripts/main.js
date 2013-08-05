@@ -68,36 +68,34 @@ require([
     // },
 
     initialize: function (options) {
-      //console.log(options.models);
       this.current = 0;
-      //this.imgs = options.models;
       this.$el = $('.image-list');
       this.models = options.models;
     },
 
     render: function () {
       this.$el.html(this.template({'images': this.models}));
-      $('li:first', this.el).css('outline', 'solid 2px yellow');
+      $('li:first', this.el).addClass('current');
       return this;
     },
 
     back: function () {
       this.current === 0 ? this.models.length - 1 : this.current--;
-      $('li', this.el).css('outline', '');
-      $('li', this.el).eq(this.current).css('outline', 'solid 2px yellow');
+      $('li', this.el).removeClass('current');
+      $('li', this.el).eq(this.current).addClass('current');
     },
 
     forward: function () {
       this.current === this.models.length - 1 ? 0 : this.current++;
-      $('li', this.el).css('outline', '');
-      $('li', this.el).eq(this.current).css('outline', 'solid 2px yellow');
+      $('li', this.el).removeClass('current');
+      $('li', this.el).eq(this.current).addClass('current');
     },
 
     jumpTo: function (index) {
       console.log('inside the strip jumpto()');
       this.current = index;
-      $('li', this.el).css('outline', '');
-      $('li', this.el).eq(this.current).css('outline', 'solid 2px yellow');
+      $('li', this.el).removeClass('current');
+      $('li', this.el).eq(this.current).addClass('current');
     }
   });
 
@@ -106,7 +104,8 @@ require([
 
     events: {
       'click .arrow-left': 'back',
-      'click .arrow-right': 'forward'
+      'click .arrow-right': 'forward',
+      'click .image-list img': 'jumpTo'
     },
 
     initialize: function () {
@@ -144,6 +143,7 @@ require([
       this.imageView.update(this.imgs[this.current]);
     },
     jumpTo: function (index) {
+      console.log('entering jumpTo()');
       // index is zero-based here
       this.current = index;
       if (index >= 0 && index < this.imgs.length) {
